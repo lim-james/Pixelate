@@ -4,7 +4,7 @@ float sround(float value, float segments) {
   return floor(value * segments) / segments;
 }
 
-vec4 main(std::Texture2d maskTex, std::Texture2d viewTex, float segments, float fore, float back) {
+vec4 main(std::Texture2d viewTex, std::Texture2d foregroundSegment, std::Texture2d faceSegment, float segments, float fore, float back, float face) {
   vec2 screen = std::getRenderTargetSize();
   float aspect = screen.y / screen.x;
 
@@ -14,7 +14,9 @@ vec4 main(std::Texture2d maskTex, std::Texture2d viewTex, float segments, float 
     sround(uv.y, segments * aspect)
   );
 
-  float mask = ceil(maskTex.sample(seg).w);
+  float foregroundMask = ceil(foregroundSegment.sample(seg).w);
+  float faceMask = ceil(faceSegment.sample(seg).w);
+  float mask = mix(foregroundMask, faceMask, face);
 
   vec4 color = viewTex.sample(uv);
   vec4 pixel = viewTex.sample(seg);
