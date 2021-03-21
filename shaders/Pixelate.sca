@@ -1,4 +1,4 @@
-#import <lights>
+#import <utils>
 
 float sround(float value, float segments) {
   return floor(value * segments) / segments;
@@ -14,7 +14,7 @@ vec4 main(std::Texture2d maskTex, std::Texture2d viewTex, float segments, float 
     sround(uv.y, segments * aspect)
   );
 
-  float mask = ceil(maskTex.sample(seg).z);
+  float mask = ceil(maskTex.sample(seg).w);
 
   vec4 color = viewTex.sample(uv);
   vec4 pixel = viewTex.sample(seg);
