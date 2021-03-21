@@ -19,6 +19,10 @@ vec4 main(std::Texture2d maskTex, std::Texture2d viewTex, float segments, float 
   vec4 color = viewTex.sample(uv);
   vec4 pixel = viewTex.sample(seg);
 
+  pixel.x = sround(pixel.x, 16.0);
+  pixel.y = sround(pixel.y, 16.0);
+  pixel.z = sround(pixel.z, 16.0);
+
   vec4 foreColor = mix(color, pixel, fore) * mask;
   vec4 backColor = mix(color, pixel, back) * (1.0 - mask); 
 
