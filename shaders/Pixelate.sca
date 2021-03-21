@@ -1,4 +1,5 @@
 #import <utils>
+#import <color_spaces>
 
 float sround(float value, float segments) {
   return floor(value * segments) / segments;
@@ -14,16 +15,16 @@ vec4 main(std::Texture2d viewTex, std::Texture2d foregroundSegment, std::Texture
     sround(uv.y, segments * aspect)
   );
 
-  float foregroundMask = ceil(foregroundSegment.sample(seg).w);
-  float faceMask = ceil(faceSegment.sample(seg).w);
+  float foregroundMask = round(foregroundSegment.sample(seg).w);
+  float faceMask = round(faceSegment.sample(seg).w);
   float mask = mix(foregroundMask, faceMask, face);
 
   vec4 color = viewTex.sample(uv);
   vec4 pixel = viewTex.sample(seg);
 
-  pixel.x = sround(pixel.x, 16.0);
-  pixel.y = sround(pixel.y, 16.0);
-  pixel.z = sround(pixel.z, 16.0);
+  vec3 hsl = std::rgbToHsl(pixel.xyz);
+  hsl.z = sround(hsl.z, 12.0);
+  pixel = vec4(std::hslToRgb(hsl), pixel.w);
 
   vec4 foreColor = mix(color, pixel, fore) * mask;
   vec4 backColor = mix(color, pixel, back) * (1.0 - mask); 
